@@ -1,0 +1,4 @@
+**/pull-secret.*
+**/*.csv
+**/*.log
+.DS_Store
