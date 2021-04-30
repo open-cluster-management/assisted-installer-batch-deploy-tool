@@ -1,11 +1,11 @@
 apiVersion: hive.openshift.io/v1
 kind: ClusterDeployment
 metadata:
-  name: cluster_name
-  namespace: cluster_name
+  name: {{CLUSTER_NAME}}
+  namespace: {{CLUSTER_NAME}}
 spec:
-  baseDomain: base_domain
-  clusterName: cluster_name
+  baseDomain: {{BASE_DOMAIN}}
+  clusterName: {{CLUSTER_NAME}}
   platform:
     agentBareMetal:
       apiVIP: ""
@@ -13,15 +13,15 @@ spec:
       vipDHCPAllocation: "Enabled"
       agentSelector:
         matchLabels:
-          bla: aaa
+          cluster-name: {{CLUSTER_NAME}}
   provisioning:
     imageSetRef:
-      name: "openshift-4.8.0-fc.0"
+      name: "openshift-4.8.0-fc.2"
     sshPrivateKeySecretRef:
       name: assisted-deployment-ssh-private-key
     installStrategy:
       agent:
-        sshPublicKey: public_key
+        sshPublicKey: {{PUBLIC_KEY}}
         networking:
           networkType: OVNKubernetes
           clusterNetwork:
@@ -30,12 +30,12 @@ spec:
           serviceNetwork:
             - 172.30.0.0/16
           machineNetwork:
-            - cidr: machine_network_cidr
+            - cidr: {{MACHINE_NETWORK_DIR}}
         provisionRequirements:
           controlPlaneAgents: 1
           workerAgents: 0
         agentSelector:
           matchLabels:
-            bla: aaa
+            cluster-name: {{CLUSTER_NAME}}
   pullSecretRef:
     name: assisted-deployment-pull-secret

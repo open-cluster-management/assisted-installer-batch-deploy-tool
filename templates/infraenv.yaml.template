@@ -1,18 +1,18 @@
 apiVersion: agent-install.openshift.io/v1beta1
 kind: InfraEnv
 metadata:
-  name: cluster_name
-  namespace: cluster_name
+  name: {{CLUSTER_NAME}}
+  namespace: {{CLUSTER_NAME}}
 spec:
   clusterRef:
-    name: cluster_name
-    namespace: cluster_name
-  sshAuthorizedKey: public_key
+    name: {{CLUSTER_NAME}}
+    namespace: {{CLUSTER_NAME}}
+  sshAuthorizedKey: {{PUBLIC_KEY}}
   agentLabelSelector:
     matchLabels:
-      bla: aaa
+      cluster-name: {{CLUSTER_NAME}}
   pullSecretRef:
     name: assisted-deployment-pull-secret
   nmStateConfigLabelSelector:
     matchLabels:
-      acm-ai-sno-test-cluster_name: cluster_name
+      acm-ai-sno-test-{{CLUSTER_NAME}}: {{CLUSTER_NAME}}

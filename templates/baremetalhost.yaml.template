@@ -1,19 +1,19 @@
 apiVersion: metal3.io/v1alpha1
 kind: BareMetalHost
 metadata:
-  name: cluster_name
-  namespace: cluster_name
+  name: {{CLUSTER_NAME}}
+  namespace: {{CLUSTER_NAME}}
   annotations:
     inspect.metal3.io: disabled
-    bmac.agent-install.openshift.io/hostname: "cluster_name"
+    bmac.agent-install.openshift.io/hostname: "{{CLUSTER_NAME}}"
   labels:
-    infraenvs.agent-install.openshift.io: "cluster_name"
+    infraenvs.agent-install.openshift.io: "{{CLUSTER_NAME}}"
 spec:
   bootMode: "UEFI"
   bmc:
-    address: bmc_addr
+    address: {{BMC_ADDR}}
     disableCertificateVerification: true
-    credentialsName: cluster_name-bmc-secret
-  bootMACAddress: mac_addr
+    credentialsName: {{CLUSTER_NAME}}-bmc-secret
+  bootMACAddress: {{MAC_ADDR}}
   automatedCleaningMode: disabled
   online: true
