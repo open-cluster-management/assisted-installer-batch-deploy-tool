@@ -39,11 +39,15 @@ sleep_seconds=10
 while true; do
   D=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-  initialized=$(oc get clusterdeployment --all-namespaces | grep -c sno | tr -d " ")
+  clusterdeployments_readyforinstallation_and_installed=$(oc get clusterdeployment --all-namespaces --no-headers -o custom-columns=READY:'.status.conditions[?(@.type=="ReadyForInstallation")].reason',installed:'.spec.installed')
+
+  initialized=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -c sno | tr -d " ")
   booted=$(oc get bmh --all-namespaces | grep -c provisioned | tr -d " ")
   discovered=$(oc get agent --all-namespaces | wc -l | tr -d " ")
-  provisioning=$(oc get clusterdeployment --all-namespaces | grep sno | grep provisioning | wc -l | tr -d " ")
-  completed=$(oc get clusterdeployment --all-namespaces | grep sno | grep completed | wc -l | tr -d " ")
+
+  provisioning=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -c ClusterAlreadyInstalling | tr -d " ")
+  completed=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -c true | tr -d " ")
+
   managed=$(oc get managedcluster --no-headers -o custom-columns=JOINED:'.status.conditions[?(@.type=="ManagedClusterJoined")].status',AVAILABLE:'.status.conditions[?(@.type=="ManagedClusterConditionAvailable")].status' | grep -v none | grep True | grep -v Unknown | wc -l | tr -d " ")
   agent_installed=$(oc get managedclusteraddon -A --no-headers -o custom-columns=AVAILABLE:'.status.conditions[?(@.type=="Available")].status' | grep -c True)
 

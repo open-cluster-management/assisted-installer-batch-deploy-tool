@@ -66,17 +66,23 @@ generate_manifest_yamls() {
         templates/klusterletaddonconfig.yaml.template > "$yaml_dir"/600-klusterletaddonconfig.yaml
     # Append addon enable info
     for k in $(jq '.acmAddonConfig | keys | .[]' acm-agent-addon.json); do
-	addonName=$(jq -r ".acmAddonConfig[$k].addonName" acm-agent-addon.json);
-        enabled=$(jq -r ".acmAddonConfig[$k].enabled" acm-agent-addon.json);
+	addon_name=$(jq -r ".acmAddonConfig[$k].addonName" acm-agent-addon.json)
+        enabled=$(jq -r ".acmAddonConfig[$k].enabled" acm-agent-addon.json)
+
+	# If user wants to disable the observability addon, just simply delete the line
+	# because it's enabled by default
+	if [[ $addon_name == "observability" && ! $enabled ]]; then
+	    sed -e "s/\{\{OBSERVABILITY_LABEL\}\}/observability=disabled/g" \
+		templates/managedcluster.yaml.template \
+		> $yaml_dir/700-managedcluster.yaml
+	fi
+
         # Need to write to yaml; cannot use yq because bastion machine doesn't have yq
-        echo -e "\n  $addonName:\n    enabled: $enabled" >> "$yaml_dir"/600-klusterletaddonconfig.yaml
-        # TODO(taragu) for observaility addons that use labels
-        # put this in klusterletaddonconfig.yaml.template: labels: {}
-        # sed -e "s/{}/    - $addonName/1/" $yaml_dir/600-klusterletaddonconfig.yaml
+        echo -e "\n  $addon_name:\n    enabled: $enabled" >> "$yaml_dir"/600-klusterletaddonconfig.yaml
     done
-    # Disable observability if user disables it
-    #observability_enabled=$(jq '.observability.enabled' acm-agent-addon.json)
-    #
+    # Delete the {{OBSERVABILITY_LABEL}} in the yaml
+    sed -e "/\{\{OBSERVABILITY_LABEL\}\}/d" templates/managedcluster.yaml.template \
+	> $yaml_dir/700-managedcluster.yaml
 
     sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
 	-e "s~{{BMC_ADDR}}~'$bmc_addr'~g" \

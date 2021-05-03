@@ -1,24 +1,22 @@
 {
-    "acmAddonConfig":[{
-        "addonName": "iamPolicyController",
-	"enabled": true
-    }, {
-	"addonName": "policyController",
-	"enabled": true
-    }, {
-	"addonName": "searchCollector",
-	"enabled": true
-    }, {
-	"addonName": "certPolicyController",
-	"enabled": false
-    }, {
-	"addonName": "applicationManager",
-	"enabled": false
-    }, {
-        "addonName": "workManager",
-        "enabled": false
-    }],
-    "observability": {
-	"enabled": true
-    }
+    "addonName": "observability",
+    "enabled": true
+}, {
+    "addonName": "iamPolicyController",
+    "enabled": true
+}, {
+    "addonName": "policyController",
+    "enabled": true
+}, {
+    "addonName": "searchCollector",
+    "enabled": true
+}, {
+    "addonName": "certPolicyController",
+    "enabled": false
+}, {
+    "addonName": "applicationManager",
+    "enabled": false
+}, {
+    "addonName": "workManager",
+    "enabled": false
 }
