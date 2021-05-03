@@ -4,25 +4,26 @@ set -o nounset
 # Apply manifests of SNO clusters that will be installed via Assisted Installer.
 # Please create the manifests first via script create-manifests.sh.
 # Usage:
-#   ./apply-manifests.sh KUBECONFIG_PATH START_INDEX END_INDEX [NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]
+#   ./apply-manifests.sh KUBECONFIG_PATH START_INDEX END_INDEX INVENTORY_FILE [NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]
 # Clusters between START_INDEX and END_INDEX will be applied.
 # By default, 100 clusters will be applied at the same time, then sleep for 15
 # seconds, then apply the next 100 cluster, so on and so forth.
 
 if [ -z "$3" ]; then
-    echo 'usage: ./apply-manifests.sh KUBECONFIG_PATH START_INDEX END_INDEX [NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]'
+    echo 'usage: ./apply-manifests.sh KUBECONFIG_PATH START_INDEX END_INDEX INVENTORY_FILE [NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]'
     exit 1
 fi
 kubeconfig_path=$1
 start_index=$2
 end_index=$3
 if [ $start_index -gt $end_index ]; then
-    echo 'usage: ./apply-manifests.sh KUBECONFIG_PATH START_INDEX END_INDEX [NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]'
+    echo 'usage: ./apply-manifests.sh KUBECONFIG_PATH START_INDEX END_INDEX INVENTORY_FILE [NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]'
     echo 'Please provide a valid start index and end index.'
     exit 1
 fi
-num_concurrent_apply=${4:-'100'}
-interval_second=${5:-'15'}
+inventory_file=$4
+num_concurrent_apply=${5:-'100'}
+interval_second=${6:-'15'}
 
 export KUBECONFIG=$kubeconfig_path
 
@@ -58,12 +59,18 @@ function retry {
     done
 }
 
+clusters=()
+sed 1d $inventory_file | while IFS=',' read -r cluster_name _; do
+    clusters+=("$cluster_name")
+done
+
 i=1 # Start with 1 because zsh arrays starting index is 1 instead of 0
-for cluster_dir in clusters/*; do
+for cluster_name in "${clusters[@]}"; do
     if [ $i -lt "$start_index" ] || [ $i -gt "$end_index" ]; then
         ((i++))
 	continue
     fi
+    cluster_dir="clusters/cluster_name"
     [ "$STOP_LOOP" = "true" ] && break;
 
     log_file="$cluster_dir"/logs
