@@ -1,4 +1,4 @@
-{
+[{
     "addonName": "observability",
     "enabled": true
 }, {
@@ -11,12 +11,12 @@
     "addonName": "searchCollector",
     "enabled": true
 }, {
+    "addonName": "workManager",
+    "enabled": true
+}, {
     "addonName": "certPolicyController",
     "enabled": false
 }, {
     "addonName": "applicationManager",
     "enabled": false
-}, {
-    "addonName": "workManager",
-    "enabled": false
-}
+}]

@@ -17,7 +17,7 @@ set -o nounset
 #   - provisioning: clusterdeployment in provisioning state
 #   - completed: clusterdeployment in completed state
 #   - managed: managedcluster avaialble
-#   - agent_installed: managedclusteraddon avaialble
+#   - agents_available: managedclusteraddon avaialble
 
 file=managedsnocluster.csv
 
@@ -30,7 +30,7 @@ discovered,\
 provisioning,\
 completed,\
 managed,\
-agent_installed\
+agents_available\
 " > ${file}
 fi
 
@@ -39,17 +39,17 @@ sleep_seconds=10
 while true; do
   D=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-  clusterdeployments_readyforinstallation_and_installed=$(oc get clusterdeployment --all-namespaces --no-headers -o custom-columns=READY:'.status.conditions[?(@.type=="ReadyForInstallation")].reason',installed:'.spec.installed')
+  clusterdeployments_readyforinstallation_and_installed=$(oc get clusterdeployment -A --no-headers -o custom-columns=READY:'.status.conditions[?(@.type=="ReadyForInstallation")].reason',installed:'.spec.installed')
 
   initialized=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -c sno | tr -d " ")
-  booted=$(oc get bmh --all-namespaces | grep -c provisioned | tr -d " ")
-  discovered=$(oc get agent --all-namespaces | wc -l | tr -d " ")
+  booted=$(oc get bmh -A | grep -c provisioned | tr -d " ")
+  discovered=$(oc get agent -A | wc -l | tr -d " ")
 
   provisioning=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -c ClusterAlreadyInstalling | tr -d " ")
-  completed=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -c true | tr -d " ")
+  completed=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -i -c true | tr -d " ")
 
-  managed=$(oc get managedcluster --no-headers -o custom-columns=JOINED:'.status.conditions[?(@.type=="ManagedClusterJoined")].status',AVAILABLE:'.status.conditions[?(@.type=="ManagedClusterConditionAvailable")].status' | grep -v none | grep True | grep -v Unknown | wc -l | tr -d " ")
-  agent_installed=$(oc get managedclusteraddon -A --no-headers -o custom-columns=AVAILABLE:'.status.conditions[?(@.type=="Available")].status' | grep -c True)
+  managed=$(oc get managedcluster -A --no-headers -o custom-columns=JOINED:'.status.conditions[?(@.type=="ManagedClusterJoined")].status',AVAILABLE:'.status.conditions[?(@.type=="ManagedClusterConditionAvailable")].status' | grep -v none | grep -i true | grep -v Unknown | wc -l | tr -d " ")
+  agents_available=$(oc get managedclusteraddon -A --no-headers -o custom-columns=AVAILABLE:'.status.conditions[?(@.type=="Available")].status' | grep -i -c true)
 
   echo "$D"
   echo "$D initialized: $initialized"
@@ -58,7 +58,7 @@ while true; do
   echo "$D provisioning: $provisioning"
   echo "$D completed: $completed"
   echo "$D managed: $managed"
-  echo "$D agent_installed: $agent_installed"
+  echo "$D agents_available: $agents_available"
 
   echo "\
 $D,\
@@ -68,7 +68,7 @@ $discovered,\
 $provisioning,\
 $completed,\
 $managed,\
-$agent_installed\
+$agents_available\
 " >> ${file}
 
   sleep "$sleep_seconds"
