@@ -1,15 +1,15 @@
 [{
     "addonName": "observability",
-    "enabled": true
+    "enabled": false
 }, {
     "addonName": "iamPolicyController",
-    "enabled": true
+    "enabled": false
 }, {
     "addonName": "policyController",
-    "enabled": true
+    "enabled": false
 }, {
     "addonName": "searchCollector",
-    "enabled": true
+    "enabled": false
 }, {
     "addonName": "workManager",
     "enabled": true

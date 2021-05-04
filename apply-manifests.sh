@@ -9,7 +9,7 @@ set -o nounset
 # By default, 100 clusters will be applied at the same time, then sleep for 15
 # seconds, then apply the next 100 cluster, so on and so forth.
 
-if [ -z "$3" ]; then
+if [ -z "$4" ]; then
   echo 'usage: ./apply-manifests.sh KUBECONFIG_PATH START_INDEX END_INDEX INVENTORY_FILE [NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]'
   exit 1
 fi
@@ -60,17 +60,20 @@ function retry {
 }
 
 clusters=()
-sed 1d $inventory_file | while IFS=',' read -r cluster_name _; do
-  clusters+=("$cluster_name")
-done
+while IFS=',' read cluster_name _; do
+  clusters=("${clusters[@]}" "$cluster_name")
+done <"$inventory_file"
 
 i=1 # Start with 1 because zsh arrays starting index is 1 instead of 0
 for cluster_name in "${clusters[@]}"; do
+  if [ $cluster_name == "cluster_name" ]; then
+    continue
+  fi
   if [ $i -lt "$start_index" ] || [ $i -gt "$end_index" ]; then
     ((i++))
     continue
   fi
-  cluster_dir="clusters/cluster_name"
+  cluster_dir="clusters/$cluster_name"
   [ "$STOP_LOOP" = "true" ] && break
 
   log_file="$cluster_dir"/logs

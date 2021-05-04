@@ -41,9 +41,6 @@ generate_manifest_yamls() {
     templates/infraenv.yaml.template >"$yaml_dir"/800-infraenv.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
-    templates/managedcluster.yaml.template >"$yaml_dir"/700-managedcluster.yaml
-
-  sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     templates/namespace.yaml.template >"$yaml_dir"/100-namespace.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
@@ -65,23 +62,26 @@ generate_manifest_yamls() {
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     templates/klusterletaddonconfig.yaml.template >"$yaml_dir"/600-klusterletaddonconfig.yaml
   # Append addon enable info
-  for k in $(jq '.[]' acm-agent-addon.json); do
-    addon_name=$(jq -r ".[$k].addonName" acm-agent-addon.json)
-    enabled=$(jq -r ".[$k].enabled" acm-agent-addon.json)
+  observability_replacement=""
+  for k in $(jq -r '.[]' -c acm-agent-addon.json); do
+    addon_name=$(echo $k | jq -c -j -r '.addonName')
+    enabled=$(echo $k | jq -c -j -r '.enabled')
 
     # If user wants to disable the observability addon, just simply delete the line
-    # because it's enabled by default
-    if [[ $addon_name == "observability" && ! $enabled ]]; then
-      sed -e "s/\{\{OBSERVABILITY_LABEL\}\}/observability=disabled/g" \
-        templates/managedcluster.yaml.template \
-        >$yaml_dir/700-managedcluster.yaml
+    # because it's enabled by default okay looks like this is wrong
+    if [[ $addon_name == "observability" && $enabled == "false" ]]; then
+      observability_replacement="observability\=disabled"
+      #      sed -e s/\{\{OBSERVABILITY_LABEL\}\}/observability\=disabled/g \
+      #        templates/managedcluster.yaml.template \
+      #        >$yaml_dir/700-managedcluster.yaml
     fi
 
     # Need to write to yaml; cannot use yq because bastion machine doesn't have yq
     echo -e "\n  $addon_name:\n    enabled: $enabled" >>"$yaml_dir"/600-klusterletaddonconfig.yaml
   done
   # Delete the {{OBSERVABILITY_LABEL}} in the yaml
-  sed -e "/\{\{OBSERVABILITY_LABEL\}\}/d" templates/managedcluster.yaml.template \
+  sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
+    -e s/\{\{OBSERVABILITY_LABEL\}\}/"$observability_replacement"/g templates/managedcluster.yaml.template \
     >$yaml_dir/700-managedcluster.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \

@@ -17,15 +17,16 @@ If the script is exited without errors, manifests should be created for each inv
 ### Monitoring managed SNO clusters
 Before applying the manifests, you can start the monitoring script that measures the progress of the installation will also be started in the background. Its output will be saved in `managedsnocluster.csv`:
 ```sh
-./monitor-deployment.sh
+./monitor-deployment.sh kubeconfig/path [interval_seconds]
 ```
+You can specify an optional parameter `interval_seconds` to this script which is number of seconds to wait between pull stats (default value is 10).
 
 ### Applying manifests
 You can now run the script to apply these manifests for all clusters:
 ```sh
-./apply-manifests.sh kubeconfig/path start_index end_index inventory_file[NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]
+./apply-manifests.sh kubeconfig/path start_index end_index inventory_file [NUM_CONCURRENT_APPLY] [INTERVAL_SECOND]
 ```
-You can specify two optional parameters to this script: number of concurrent applies (default value is 1000) and the number of seconds (default value is 0) to wait in between each batch of concurrent applies.
+You can specify two optional parameters to this script: number of concurrent applies (default value is 100) and the number of seconds (default value is 15) to wait in between each batch of concurrent applies.
 
 ## Debug
 
