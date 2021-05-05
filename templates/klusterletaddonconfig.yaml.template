@@ -1,0 +1,11 @@
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: {{CLUSTER_NAME}}
+  namespace: {{CLUSTER_NAME}}
+spec:
+  clusterName: {{CLUSTER_NAME}}
+  clusterNamespace: {{CLUSTER_NAME}}
+  clusterLabels:
+    cloud: auto-detect
+    vendor: auto-detect

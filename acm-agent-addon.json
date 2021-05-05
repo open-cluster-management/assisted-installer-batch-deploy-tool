@@ -1,0 +1,22 @@
+[{
+    "addonName": "observability",
+    "enabled": false
+}, {
+    "addonName": "iamPolicyController",
+    "enabled": false
+}, {
+    "addonName": "policyController",
+    "enabled": false
+}, {
+    "addonName": "searchCollector",
+    "enabled": false
+}, {
+    "addonName": "workManager",
+    "enabled": true
+}, {
+    "addonName": "certPolicyController",
+    "enabled": false
+}, {
+    "addonName": "applicationManager",
+    "enabled": false
+}]
