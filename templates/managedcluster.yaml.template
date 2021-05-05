@@ -2,6 +2,8 @@ apiVersion: cluster.open-cluster-management.io/v1
 kind: ManagedCluster
 metadata:
   name: {{CLUSTER_NAME}}
-  {{OBSERVABILITY_LABEL}}
+  labels:
+    name: {{CLUSTER_NAME}}
+    {{OBSERVABILITY_LABEL}}
 spec:
   hubAcceptsClient: true

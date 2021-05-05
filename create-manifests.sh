@@ -70,7 +70,7 @@ generate_manifest_yamls() {
     # If user wants to disable the observability addon, just simply delete the line
     # because it's enabled by default okay looks like this is wrong
     if [[ $addon_name == "observability" && $enabled == "false" ]]; then
-      observability_replacement="observability\=disabled"
+      observability_replacement="observability: disabled"
       #      sed -e s/\{\{OBSERVABILITY_LABEL\}\}/observability\=disabled/g \
       #        templates/managedcluster.yaml.template \
       #        >$yaml_dir/700-managedcluster.yaml
