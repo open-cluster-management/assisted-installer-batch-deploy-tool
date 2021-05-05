@@ -48,8 +48,8 @@ while true; do
   clusterdeployments_readyforinstallation_and_installed=$(oc get clusterdeployment -A --no-headers -o custom-columns=READY:'.status.conditions[?(@.type=="ReadyForInstallation")].reason',installed:'.spec.installed',name:'.spec.clusterName')
 
   initialized=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -c sno | tr -d " ")
-  booted=$(oc get bmh -A | grep -c provisioned | tr -d " ")
-  discovered=$(oc get agent -A | wc -l | tr -d " ")
+  booted=$(oc get bmh -A --no-headers | grep -c provisioned | tr -d " ")
+  discovered=$(oc get agent -A --no-headers | wc -l | tr -d " ")
 
   provisioning=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -c ClusterAlreadyInstalling | tr -d " ")
   completed=$(echo "$clusterdeployments_readyforinstallation_and_installed" | grep -i -c true | tr -d " ")
