@@ -29,11 +29,14 @@ generate_manifest_yamls() {
 
   echo "====== Generating manifests for $cluster_name  ======"
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
+    -e s/\{\{BASE_DOMAIN\}\}/"$base_domain"/g \
+    templates/clusterdeployment.template.yaml >"$yaml_dir"/500-clusterdeployment.yaml
+
+  sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e s/\{\{NETWORKTYPE\}\}/"$network_type"/g \
     -e "s~{{PUBLIC_KEY}}~'$public_key'~g" \
     -e s~\{\{MACHINE_NETWORK_DIR\}\}~"$machine_network_cidr"~g \
-    -e s/\{\{BASE_DOMAIN\}\}/"$base_domain"/g \
-    templates/clusterdeployment.template.yaml >"$yaml_dir"/500-clusterdeployment.yaml
+    templates/agentclusterinstall.template.yaml >"$yaml_dir"/500-agentclusterinstall.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e s/\{\{BMC_USERNAME_BASE64\}\}/"$bmc_username_base64"/g \
