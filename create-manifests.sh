@@ -17,6 +17,9 @@ inventory_file=$1
 pull_secret_path=$2
 ssh_key_path=$3
 
+#network_type="OpenShiftSDN"
+network_type="OVNKubernetes"
+
 generate_manifest_yamls() {
   local row=$1
   IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 <<<$row
@@ -26,6 +29,7 @@ generate_manifest_yamls() {
 
   echo "====== Generating manifests for $cluster_name  ======"
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
+    -e s/\{\{NETWORKTYPE\}\}/"$network_type"/g \
     -e "s~{{PUBLIC_KEY}}~'$public_key'~g" \
     -e s~\{\{MACHINE_NETWORK_DIR\}\}~"$machine_network_cidr"~g \
     -e s/\{\{BASE_DOMAIN\}\}/"$base_domain"/g \

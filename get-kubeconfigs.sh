@@ -46,7 +46,7 @@ for cluster_name in "${clusters[@]}"; do
     echo "Getting kubeconfig failed"
   else
     echo "Getting kubeconfig succeeded"
-    cat "$cluster_kubeconfig" | jq -r '.data.kubeconfig' | base64 -d > clusters/$cluster_name/kubeconfig
+    echo "$cluster_kubeconfig" | jq -r '.data.kubeconfig' | base64 -d > clusters/$cluster_name/kubeconfig
   fi
 
   ((i++))

@@ -1,6 +1,8 @@
 apiVersion: hive.openshift.io/v1
 kind: ClusterDeployment
 metadata:
+  annotations:
+    agent-install.openshift.io/install-config-overrides: '{"networking":{"networkType":"{{NETWORKTYPE}}"}}'
   name: {{CLUSTER_NAME}}
   namespace: {{CLUSTER_NAME}}
 spec:
@@ -16,14 +18,11 @@ spec:
           cluster-name: {{CLUSTER_NAME}}
   provisioning:
     imageSetRef:
-      name: "openshift-4.8.0-fc.2"
-    sshPrivateKeySecretRef:
-      name: assisted-deployment-ssh-private-key
+      name: "openshift-4.8.0-fc.3"
     installStrategy:
       agent:
         sshPublicKey: {{PUBLIC_KEY}}
         networking:
-          networkType: OVNKubernetes
           clusterNetwork:
             - cidr: 10.128.0.0/14
               hostPrefix: 23
