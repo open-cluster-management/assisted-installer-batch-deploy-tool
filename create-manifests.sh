@@ -29,23 +29,26 @@ generate_manifest_yamls() {
 
   echo "====== Generating manifests for $cluster_name  ======"
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
+    -e s/\{\{BASE_DOMAIN\}\}/"$base_domain"/g \
+    templates/clusterdeployment.template.yaml >"$yaml_dir"/500-clusterdeployment.yaml
+
+  sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e s/\{\{NETWORKTYPE\}\}/"$network_type"/g \
     -e "s~{{PUBLIC_KEY}}~'$public_key'~g" \
     -e s~\{\{MACHINE_NETWORK_DIR\}\}~"$machine_network_cidr"~g \
-    -e s/\{\{BASE_DOMAIN\}\}/"$base_domain"/g \
-    templates/clusterdeployment.yaml.template >"$yaml_dir"/500-clusterdeployment.yaml
+    templates/agentclusterinstall.template.yaml >"$yaml_dir"/500-agentclusterinstall.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e s/\{\{BMC_USERNAME_BASE64\}\}/"$bmc_username_base64"/g \
     -e s/\{\{BMC_PASSWORD_BASE64\}\}/"$bmc_password_base64"/g \
-    templates/bmh-secret.yaml.template >"$yaml_dir"/200-bmh-secret.yaml
+    templates/bmh-secret.template.yaml >"$yaml_dir"/200-bmh-secret.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e "s~{{PUBLIC_KEY}}~'$public_key'~g" \
-    templates/infraenv.yaml.template >"$yaml_dir"/800-infraenv.yaml
+    templates/infraenv.template.yaml >"$yaml_dir"/800-infraenv.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
-    templates/namespace.yaml.template >"$yaml_dir"/100-namespace.yaml
+    templates/namespace.template.yaml >"$yaml_dir"/100-namespace.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e "s~{{DNS_RESOLVER}}~'$dns_resolver'~g" \
@@ -53,18 +56,14 @@ generate_manifest_yamls() {
     -e "s~{{MAC_ADDR}}~'$mac_addr'~g" \
     -e "s~{{GATEWAY}}~'$gateway'~g" \
     -e s/\{\{PUBLIC_IP_NETWORK_PREFIX\}\}/"$public_ip_network_prefix"/g \
-    templates/nmstate.yaml.template >"$yaml_dir"/300-nmstate.yaml
+    templates/nmstate.template.yaml >"$yaml_dir"/300-nmstate.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e s/\{\{PULL_SECRET_BASE64\}\}/"$pull_secret_base64"/g \
-    templates/pull-secret.yaml.template >"$yaml_dir"/400-pull-secret.yaml
+    templates/pull-secret.template.yaml >"$yaml_dir"/400-pull-secret.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
-    -e s/\{\{PRIVATE_KEY_BASE64\}\}/"$private_key_base64"/g \
-    templates/private-key.yaml.template >"$yaml_dir"/400-private-key.yaml
-
-  sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
-    templates/klusterletaddonconfig.yaml.template >"$yaml_dir"/600-klusterletaddonconfig.yaml
+    templates/klusterletaddonconfig.template.yaml >"$yaml_dir"/600-klusterletaddonconfig.yaml
   # Append addon enable info
   observability_replacement=""
   for k in $(jq -r '.[]' -c acm-agent-addon.json); do
@@ -76,7 +75,7 @@ generate_manifest_yamls() {
     if [[ $addon_name == "observability" && $enabled == "false" ]]; then
       observability_replacement="observability: disabled"
       #      sed -e s/\{\{OBSERVABILITY_LABEL\}\}/observability\=disabled/g \
-      #        templates/managedcluster.yaml.template \
+      #        templates/managedcluster.template.yaml \
       #        >$yaml_dir/700-managedcluster.yaml
     fi
 
@@ -85,18 +84,17 @@ generate_manifest_yamls() {
   done
   # Delete the {{OBSERVABILITY_LABEL}} in the yaml
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
-    -e s/\{\{OBSERVABILITY_LABEL\}\}/"$observability_replacement"/g templates/managedcluster.yaml.template \
+    -e s/\{\{OBSERVABILITY_LABEL\}\}/"$observability_replacement"/g templates/managedcluster.template.yaml \
     >$yaml_dir/700-managedcluster.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e "s~{{BMC_ADDR}}~'$bmc_addr'~g" \
     -e "s~{{MAC_ADDR}}~'$mac_addr'~g" \
-    templates/baremetalhost.yaml.template >"$yaml_dir"/900-baremetalhost.yaml
+    templates/baremetalhost.template.yaml >"$yaml_dir"/900-baremetalhost.yaml
 }
 
 pull_secret_base64=$(base64 -w 0 "$pull_secret_path")
 public_key=$(cat "${ssh_key_path}.pub")
-private_key_base64=$(base64 -w 0 "${ssh_key_path}")
 
 sed 1d $inventory_file | while IFS="," read row; do
   generate_manifest_yamls "$row"
