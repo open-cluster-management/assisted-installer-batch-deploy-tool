@@ -62,10 +62,6 @@ generate_manifest_yamls() {
     -e s/\{\{PULL_SECRET_BASE64\}\}/"$pull_secret_base64"/g \
     templates/pull-secret.template.yaml >"$yaml_dir"/400-pull-secret.yaml
 
-  # sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
-  #   -e s/\{\{PRIVATE_KEY_BASE64\}\}/"$private_key_base64"/g \
-  #   templates/private-key.template.yaml >"$yaml_dir"/400-private-key.yaml
-
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     templates/klusterletaddonconfig.template.yaml >"$yaml_dir"/600-klusterletaddonconfig.yaml
   # Append addon enable info
@@ -99,7 +95,6 @@ generate_manifest_yamls() {
 
 pull_secret_base64=$(base64 -w 0 "$pull_secret_path")
 public_key=$(cat "${ssh_key_path}.pub")
-# private_key_base64=$(base64 -w 0 "${ssh_key_path}")
 
 sed 1d $inventory_file | while IFS="," read row; do
   generate_manifest_yamls "$row"
