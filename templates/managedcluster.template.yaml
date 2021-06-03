@@ -4,6 +4,7 @@ metadata:
   name: {{CLUSTER_NAME}}
   labels:
     name: {{CLUSTER_NAME}}
+    vendor: OpenShift
     {{OBSERVABILITY_LABEL}}
 spec:
   hubAcceptsClient: true
