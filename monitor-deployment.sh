@@ -17,7 +17,7 @@ set -o nounset
 #   - booted: baremetal hosts that are provisioned; currently running discovery iso and downloading rootfs.
 #   - discovered: rootfs has been downloaded and discovery results sent back to the hub; agent created.
 #   - provisioning: agentclusterinstall in provisioning state
-#   - installfailed: agentclusterinstall in failed state
+#   - install_failed: agentclusterinstall in failed state
 #   - completed: clusterdeployment in completed state
 #   - managed: managedcluster avaialble
 #   - agents_available: managedclusteraddon avaialble
@@ -41,7 +41,7 @@ iso_bmh,\
 booted,\
 discovered,\
 provisioning,\
-installfailed,\
+install_failed,\
 completed,\
 managed,\
 agents_available\
@@ -63,7 +63,7 @@ while true; do
   discovered=$(oc get agent -A --no-headers | wc -l | tr -d " ")
 
   provisioning=$(echo "$agentclusterinstall_readyforinstallation" | grep -c InstallationInProgress | tr -d " ")
-  installfailed=$(echo "$agentclusterinstall_readyforinstallation" | grep -c InstallationFailed | tr -d " ")
+  install_failed=$(echo "$agentclusterinstall_readyforinstallation" | grep -c InstallationFailed | tr -d " ")
   completed=$(echo "$clusterdeployments_installed" | grep -i -c true | tr -d " ")
 
   managed=$(oc get managedcluster -A --no-headers -o custom-columns=JOINED:'.status.conditions[?(@.type=="ManagedClusterJoined")].status',AVAILABLE:'.status.conditions[?(@.type=="ManagedClusterConditionAvailable")].status' | grep -v none | grep -i true | grep -v Unknown | wc -l | tr -d " ")
@@ -76,7 +76,7 @@ while true; do
   echo "$D booted: $booted"
   echo "$D discovered: $discovered"
   echo "$D provisioning: $provisioning"
-  echo "$D installfailed: $installfailed"
+  echo "$D install_failed: $install_failed"
   echo "$D completed: $completed"
   echo "$D managed: $managed"
   echo "$D agents_available: $agents_available"
@@ -89,7 +89,7 @@ $iso_bmh,\
 $booted,\
 $discovered,\
 $provisioning,\
-$installfailed,\
+$install_failed,\
 $completed,\
 $managed,\
 $agents_available\
