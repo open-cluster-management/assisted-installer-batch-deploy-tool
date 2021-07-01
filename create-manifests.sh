@@ -64,6 +64,9 @@ generate_manifest_yamls() {
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     templates/klusterletaddonconfig.template.yaml >"$yaml_dir"/600-klusterletaddonconfig.yaml
+
+  sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
+    templates/configmap-workload-partitioning.template.yaml > "$yaml_dir"/1000-configmap-workload-partitioning.yaml
   # Append addon enable info
   observability_replacement=""
   for k in $(jq -r '.[]' -c acm-agent-addon.json); do
