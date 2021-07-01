@@ -52,4 +52,3 @@ while true; do
 
   sleep "$sleep_seconds"
 done
-
