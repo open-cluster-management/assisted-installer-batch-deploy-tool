@@ -1,0 +1,20 @@
+apiVersion: hive.openshift.io/v1
+kind: ClusterDeployment
+metadata:
+  name: sno00155
+  namespace: sno00155
+spec:
+  baseDomain: rdu2.scalelab.redhat.com
+  clusterName: sno00155
+  clusterInstallRef:
+    group: extensions.hive.openshift.io
+    version: v1beta1
+    kind: AgentClusterInstall
+    name: sno00155
+  platform:
+    agentBareMetal:
+      agentSelector:
+        matchLabels:
+          cluster-name: sno00155
+  pullSecretRef:
+    name: assisted-deployment-pull-secret

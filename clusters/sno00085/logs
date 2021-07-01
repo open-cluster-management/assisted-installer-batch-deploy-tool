@@ -1,0 +1,12 @@
+2021-06-25 00:12:57, ----sleeping for 10 seconds
+2021-06-25 00:13:07, (1063) Applying manifests for clusters/sno00085
+namespace/sno00085 created
+secret/sno00085-bmc-secret created
+nmstateconfig.agent-install.openshift.io/sno00085 created
+secret/assisted-deployment-pull-secret created
+agentclusterinstall.extensions.hive.openshift.io/sno00085 created
+clusterdeployment.hive.openshift.io/sno00085 created
+klusterletaddonconfig.agent.open-cluster-management.io/sno00085 created
+managedcluster.cluster.open-cluster-management.io/sno00085 created
+infraenv.agent-install.openshift.io/sno00085 created
+baremetalhost.metal3.io/sno00085 created

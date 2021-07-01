@@ -1,0 +1,32 @@
+apiVersion: agent.open-cluster-management.io/v1
+kind: KlusterletAddonConfig
+metadata:
+  name: sno00394
+  namespace: sno00394
+spec:
+  clusterName: sno00394
+  clusterNamespace: sno00394
+  clusterLabels:
+    cloud: auto-detect
+    vendor: auto-detect
+
+  observability:
+    enabled: true
+
+  iamPolicyController:
+    enabled: false
+
+  policyController:
+    enabled: true
+
+  searchCollector:
+    enabled: false
+
+  workManager:
+    enabled: true
+
+  certPolicyController:
+    enabled: false
+
+  applicationManager:
+    enabled: false

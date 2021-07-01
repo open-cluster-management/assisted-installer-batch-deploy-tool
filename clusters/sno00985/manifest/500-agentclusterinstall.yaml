@@ -1,0 +1,32 @@
+apiVersion: extensions.hive.openshift.io/v1beta1
+kind: AgentClusterInstall
+metadata:
+  annotations:
+    agent-install.openshift.io/install-config-overrides: '{"networking":{"networkType":"OVNKubernetes"}}'
+  name: sno00985
+  namespace: sno00985
+spec:
+  imageSetRef:
+    name:  4.8.0-rc.0
+  clusterDeploymentRef:
+    name: sno00985
+  networking:
+    clusterNetwork:
+      - cidr: 10.128.0.0/14
+        hostPrefix: 23
+    serviceNetwork:
+      - 172.30.0.0/16
+    machineNetwork:
+      - cidr: 198.18.8.0/21
+  sshPublicKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1ab3Y+z4/OXNJpAgf7NaAL62es5fSpgqRzQZgphmWiasM/3cdaTSYCSoYaobaHsnRx1D0APp0ZtJJ5msY9sYoTaG/Z77U6pRKC/3ZAMUJNpeP4kxK3caP2jHdnCbUBKR5o3A18neP6axZU64583QBVF83RgBD6u3csYQloGvqe9TZheKhTLb7qwfDYrowaRFdJhoG8pRWEkV0UQd4PPS0hhm+PBLU9sjFE62q+hJ+Ohw4AJgVgsmGEKjLG1eF2uYsu7WE9k0fNN4iYkQD6ipOc2DZpAvXQKYSC0RifkAzuLzUqqf7b2K5ZZOUQyj1vhBCbpZiyv/bKWCYk3/GkbyMCxIrjYS9YaYBh3E4V0QxzYZtoyxYkaZNaLc0HReHpYbvq1IMy0WZeoKr2RTcSR7JvNtrF5t9vO4BQei4cE8+XhUJkP7JvAo16VypbkwelakmxHwpt7t5yVSloVslTrlTwQwMu9aQ1x003BPZBVdqSyrjrWvVGELFzmMMMxkoEbk='
+  provisionRequirements:
+    controlPlaneAgents: 1
+    workerAgents: 0
+  # controlPlane:
+  # compute:
+  # clusterMetadata:
+  #   name: ""
+  # manifestsConfigMapRef:
+  #   name: ""
+  # apiVIP: ""
+  # ingressVIP: ""

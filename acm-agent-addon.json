@@ -1,12 +1,12 @@
 [{
     "addonName": "observability",
-    "enabled": false
+    "enabled": true
 }, {
     "addonName": "iamPolicyController",
     "enabled": false
 }, {
     "addonName": "policyController",
-    "enabled": false
+    "enabled": true
 }, {
     "addonName": "searchCollector",
     "enabled": false

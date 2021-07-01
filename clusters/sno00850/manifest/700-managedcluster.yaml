@@ -1,0 +1,12 @@
+apiVersion: cluster.open-cluster-management.io/v1
+kind: ManagedCluster
+metadata:
+  name: sno00850
+  labels:
+    name: sno00850
+    vendor: OpenShift
+    
+    common: 'true'
+    group-sno-du: 'true'
+spec:
+  hubAcceptsClient: true
