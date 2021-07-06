@@ -7,15 +7,15 @@ metadata:
   namespace: {{CLUSTER_NAME}}
 spec:
   imageSetRef:
-    name:  4.8.0-rc.1
+    name: "openshift-4.8.0-rc.1"
   clusterDeploymentRef:
     name: {{CLUSTER_NAME}}
   networking:
     clusterNetwork:
-      - cidr: 10.128.0.0/14
-        hostPrefix: 23
+      - cidr: {{CLUSTER_NETWORK_CIDR}}
+        hostPrefix: {{CLUSTER_NETWORK_HOST_PREFIX}}
     serviceNetwork:
-      - 172.30.0.0/16
+      - {{SERVICE_NETWORK}}
     machineNetwork:
       - cidr: {{MACHINE_NETWORK_DIR}}
   sshPublicKey: {{PUBLIC_KEY}}

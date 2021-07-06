@@ -8,11 +8,11 @@ metadata:
 spec:
   config:
     interfaces:
-      - name: eth0
+      - name: enp1s0
         type: ethernet
         state: up
         mac-address: {{MAC_ADDR}}
-        ipv4:
+        {{NMSTATE_IP_VERSION}}:
           enabled: true
           address:
             - ip: {{IP_ADDR}}
@@ -24,10 +24,11 @@ spec:
           - {{DNS_RESOLVER}}
     routes:
       config:
-        - destination: 0.0.0.0/0
+        - destination: {{NMSTATE_DEFAULT_ROUTE}}
+          metric: 1
           next-hop-address: {{GATEWAY}}
-          next-hop-interface: eth0
+          next-hop-interface: enp1s0
           table-id: 254
   interfaces:
-    - name: "eth0"
+    - name: "enp1s0"
       macAddress: {{MAC_ADDR}}
