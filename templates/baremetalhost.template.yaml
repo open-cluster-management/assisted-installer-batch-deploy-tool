@@ -16,4 +16,4 @@ spec:
     credentialsName: {{CLUSTER_NAME}}-bmc-secret
   bootMACAddress: {{MAC_ADDR}}
   automatedCleaningMode: disabled
-  online: true
+  online: false

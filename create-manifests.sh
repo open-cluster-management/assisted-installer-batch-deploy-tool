@@ -20,6 +20,20 @@ ssh_key_path=$3
 #network_type="OpenShiftSDN"
 network_type="OVNKubernetes"
 
+# ipv4
+# nmstate_ip_version="ipv4"
+# nmstate_default_route="0.0.0.0/0"
+# cluster_network_cidr="10.128.0.0/14"
+# cluster_network_host_prefix=23
+# service_network="172.30.0.0/16"
+
+# ipv6
+nmstate_ip_version="ipv6"
+nmstate_default_route="::/0"
+cluster_network_cidr="fd01::/48"
+cluster_network_host_prefix=64
+service_network="fd02::/112"
+
 generate_manifest_yamls() {
   local row=$1
   IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 <<<$row
@@ -34,6 +48,9 @@ generate_manifest_yamls() {
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e s/\{\{NETWORKTYPE\}\}/"$network_type"/g \
+    -e "s~{{CLUSTER_NETWORK_CIDR}}~'$cluster_network_cidr'~g" \
+    -e s/\{\{CLUSTER_NETWORK_HOST_PREFIX\}\}/"$cluster_network_host_prefix"/g \
+    -e "s~{{SERVICE_NETWORK}}~'$service_network'~g" \
     -e "s~{{PUBLIC_KEY}}~'$public_key'~g" \
     -e s~\{\{MACHINE_NETWORK_DIR\}\}~"$machine_network_cidr"~g \
     templates/agentclusterinstall.template.yaml >"$yaml_dir"/500-agentclusterinstall.yaml
@@ -55,6 +72,8 @@ generate_manifest_yamls() {
     -e "s~{{IP_ADDR}}~'$ip_addr'~g" \
     -e "s~{{MAC_ADDR}}~'$mac_addr'~g" \
     -e "s~{{GATEWAY}}~'$gateway'~g" \
+    -e "s~{{NMSTATE_IP_VERSION}}~'$nmstate_ip_version'~g" \
+    -e "s~{{NMSTATE_DEFAULT_ROUTE}}~'$nmstate_default_route'~g" \
     -e s/\{\{PUBLIC_IP_NETWORK_PREFIX\}\}/"$public_ip_network_prefix"/g \
     templates/nmstate.template.yaml >"$yaml_dir"/300-nmstate.yaml
 
