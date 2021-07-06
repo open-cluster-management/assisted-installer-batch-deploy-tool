@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: sno00851
-  labels:
-    name: sno00851
