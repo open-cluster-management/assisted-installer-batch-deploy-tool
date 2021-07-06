@@ -22,8 +22,8 @@ spec:
   provisionRequirements:
     controlPlaneAgents: 1
     workerAgents: 0
-  manifestsConfigMapRef:
-    name: "sno-workload-partitioning-configmap"
+  # manifestsConfigMapRef:
+  #  name: ""
   # controlPlane:
   # compute:
   # clusterMetadata:
