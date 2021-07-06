@@ -1,1 +1,0 @@
-for mc in `oc get managedcluster -o custom-columns=name:metadata.name --no-headers | grep -v local-cluster`; do oc get secret -n $mc $mc-admin-kubeconfig -o jsonpath={.data.kubeconfig} | base64 -d > clusters/$mc/kubeconfig; done

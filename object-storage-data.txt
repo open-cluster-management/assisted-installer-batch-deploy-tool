@@ -1,7 +1,0 @@
-type: s3
-config:
-  bucket: scale1k-100yard-may27
-  endpoint: s3.amazonaws.com
-  insecure: false
-  access_key: AKIARFVXIVCSQLOOUHV4
-  secret_key: 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
