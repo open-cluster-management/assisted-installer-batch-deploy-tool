@@ -22,11 +22,11 @@ spec:
   provisionRequirements:
     controlPlaneAgents: 1
     workerAgents: 0
+  # manifestsConfigMapRef:
+  #  name: ""
   # controlPlane:
   # compute:
   # clusterMetadata:
-  #   name: ""
-  # manifestsConfigMapRef:
   #   name: ""
   # apiVIP: ""
   # ingressVIP: ""

@@ -6,13 +6,17 @@ Before you start, please create an inventory csv file by following the example [
 Then provide the addons you would like to enable or disabled in all hosts in the `acm-agent-addon.json` file.
 
 ## Create SNO clusters
-### Greating manifests
+### Generating manifests
 On the Bastion machine, run script [`create-manifests.sh`](https://github.com/open-cluster-management/assisted-installer-batch-deploy-tool/blob/main/create-manifests.sh) to create the SNO clusters:
 ```sh
 ./create-manifests.sh inventory/csv/path pull/secret/path private-key-path
 ```
 
 If the script is exited without errors, manifests should be created for each inventory. The generated manifests are under `/clusters`. Under `/clusters`, directories will be created for each SNO clusters, with the directory name being the cluster name. Before continuing to the next step, we recommend spot checking the manifests of one of the generated clusters.
+
+#### Additional options
+Set the following variables ahead of running the "Generating manifests" section.
+`enable_workload_partitioning` - set to "true" to enable workload partitioning. Default is "false".
 
 ### Monitoring managed SNO clusters
 Before applying the manifests, you can start the monitoring script that measures the progress of the installation will also be started in the background. Its output will be saved in `managedsnocluster.csv`:

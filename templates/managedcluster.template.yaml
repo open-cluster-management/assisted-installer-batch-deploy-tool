@@ -6,5 +6,7 @@ metadata:
     name: {{CLUSTER_NAME}}
     vendor: OpenShift
     {{OBSERVABILITY_LABEL}}
+    common: 'true'
+    group-sno-du: 'true'
 spec:
   hubAcceptsClient: true

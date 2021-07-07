@@ -17,6 +17,8 @@ inventory_file=$1
 pull_secret_path=$2
 ssh_key_path=$3
 
+enable_workload_partitioning=${enable_workload_partitioning:-"false"}
+
 #network_type="OpenShiftSDN"
 network_type="OVNKubernetes"
 
@@ -83,6 +85,15 @@ generate_manifest_yamls() {
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     templates/klusterletaddonconfig.template.yaml >"$yaml_dir"/600-klusterletaddonconfig.yaml
+
+  # Create configmap and add workload partitioning to agent cluster install if workload partitioning is enabled.
+  if [[ $enable_workload_partitioning == "true" ]] ; then
+    sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
+      templates/configmap-workload-partitioning.template.yaml > "$yaml_dir"/1000-configmap-workload-partitioning.yaml
+    echo "  manifestsConfigMapRef:
+    name: \"sno-workload-partitioning-configmap\"" >> "$yaml_dir"/500-agentclusterinstall.yaml
+  fi
+  
   # Append addon enable info
   observability_replacement=""
   for k in $(jq -r '.[]' -c acm-agent-addon.json); do
