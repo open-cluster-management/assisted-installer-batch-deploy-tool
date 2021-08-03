@@ -17,6 +17,7 @@ If the script is exited without errors, manifests should be created for each inv
 #### Additional options
 Set the following variables ahead of running the "Generating manifests" section.
 `enable_workload_partitioning` - set to "true" to enable workload partitioning. Default is "false".
+`cluster_image_set` - the name of the OCP clusterimageset to use in `AgentClusterInstall` for each SNO cluster. Default is "sno-ocp-clusterimageset".
 
 ### Monitoring managed SNO clusters
 Before applying the manifests, you can start the monitoring script that measures the progress of the installation will also be started in the background. Its output will be saved in `managedsnocluster.csv`:

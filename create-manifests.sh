@@ -18,6 +18,7 @@ pull_secret_path=$2
 ssh_key_path=$3
 
 enable_workload_partitioning=${enable_workload_partitioning:-"false"}
+cluster_image_set=${cluster_image_set:-"sno-ocp-clusterimageset"}
 
 #network_type="OpenShiftSDN"
 network_type="OVNKubernetes"
@@ -55,6 +56,7 @@ generate_manifest_yamls() {
     -e "s~{{SERVICE_NETWORK}}~'$service_network'~g" \
     -e "s~{{PUBLIC_KEY}}~'$public_key'~g" \
     -e s~\{\{MACHINE_NETWORK_DIR\}\}~"$machine_network_cidr"~g \
+    -e s/\{\{CLUSTER_IMAGE_SET\}\}/$cluster_image_set/g \
     templates/agentclusterinstall.template.yaml >"$yaml_dir"/500-agentclusterinstall.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
