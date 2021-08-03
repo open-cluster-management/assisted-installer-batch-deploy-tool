@@ -39,7 +39,7 @@ service_network="fd02::/112"
 
 generate_manifest_yamls() {
   local row=$1
-  IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 <<<$row
+  IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 <<< "$row"
 
   local yaml_dir=clusters/"$cluster_name"/manifest
   mkdir -p "$yaml_dir"
@@ -56,7 +56,7 @@ generate_manifest_yamls() {
     -e "s~{{SERVICE_NETWORK}}~'$service_network'~g" \
     -e "s~{{PUBLIC_KEY}}~'$public_key'~g" \
     -e s~\{\{MACHINE_NETWORK_DIR\}\}~"$machine_network_cidr"~g \
-    -e s/\{\{CLUSTER_IMAGE_SET\}\}/$cluster_image_set/g \
+    -e s/\{\{CLUSTER_IMAGE_SET\}\}/"$cluster_image_set"/g \
     templates/agentclusterinstall.template.yaml >"$yaml_dir"/500-agentclusterinstall.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
