@@ -7,7 +7,7 @@ metadata:
   namespace: {{CLUSTER_NAME}}
 spec:
   imageSetRef:
-    name: "openshift-4.8.0-rc.1"
+    name: {{CLUSTER_IMAGE_SET}}
   clusterDeploymentRef:
     name: {{CLUSTER_NAME}}
   networking:

@@ -7,17 +7,19 @@ set -o nounset
 # Please provide the hardware information of VM Hosts in inventory-manifest.csv,
 # as well as which addons you would like to enable or disable in acm-agent-addon.json.
 # Usage:
-#   ./create-manifests.sh INVENTORY_FILE PULL_SECRET_PATH SSH_KEY_PATH'
+#   ./create-manifests.sh INVENTORY_FILE PULL_SECRET_PATH SSH_KEY_PATH CLUSTER_IMAGE_SET'
 
-if [ -z "$3" ]; then
-  echo 'usage: ./create-manifests.sh INVENTORY_FILE PULL_SECRET_PATH SSH_KEY_PATH'
+if [ -z "$4" ]; then
+  echo 'usage: ./create-manifests.sh INVENTORY_FILE PULL_SECRET_PATH SSH_KEY_PATH CLUSTER_IMAGE_SET'
   exit 1
 fi
 inventory_file=$1
 pull_secret_path=$2
 ssh_key_path=$3
+cluster_image_set=$4
 
 enable_workload_partitioning=${enable_workload_partitioning:-"false"}
+
 
 #network_type="OpenShiftSDN"
 network_type="OVNKubernetes"
@@ -38,7 +40,7 @@ service_network="fd02::/112"
 
 generate_manifest_yamls() {
   local row=$1
-  IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 <<<$row
+  IFS="," read cluster_name base_domain mac_addr ip_addr public_ip_network_prefix gateway machine_network_cidr dns_resolver bmc_addr bmc_username_base64 bmc_password_base64 <<< "$row"
 
   local yaml_dir=clusters/"$cluster_name"/manifest
   mkdir -p "$yaml_dir"
@@ -55,6 +57,7 @@ generate_manifest_yamls() {
     -e "s~{{SERVICE_NETWORK}}~'$service_network'~g" \
     -e "s~{{PUBLIC_KEY}}~'$public_key'~g" \
     -e s~\{\{MACHINE_NETWORK_DIR\}\}~"$machine_network_cidr"~g \
+    -e s/\{\{CLUSTER_IMAGE_SET\}\}/"$cluster_image_set"/g \
     templates/agentclusterinstall.template.yaml >"$yaml_dir"/500-agentclusterinstall.yaml
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
