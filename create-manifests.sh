@@ -7,18 +7,19 @@ set -o nounset
 # Please provide the hardware information of VM Hosts in inventory-manifest.csv,
 # as well as which addons you would like to enable or disable in acm-agent-addon.json.
 # Usage:
-#   ./create-manifests.sh INVENTORY_FILE PULL_SECRET_PATH SSH_KEY_PATH'
+#   ./create-manifests.sh INVENTORY_FILE PULL_SECRET_PATH SSH_KEY_PATH CLUSTER_IMAGE_SET'
 
-if [ -z "$3" ]; then
-  echo 'usage: ./create-manifests.sh INVENTORY_FILE PULL_SECRET_PATH SSH_KEY_PATH'
+if [ -z "$4" ]; then
+  echo 'usage: ./create-manifests.sh INVENTORY_FILE PULL_SECRET_PATH SSH_KEY_PATH CLUSTER_IMAGE_SET'
   exit 1
 fi
 inventory_file=$1
 pull_secret_path=$2
 ssh_key_path=$3
+cluster_image_set=$4
 
 enable_workload_partitioning=${enable_workload_partitioning:-"false"}
-cluster_image_set=${cluster_image_set:-"sno-ocp-clusterimageset"}
+
 
 #network_type="OpenShiftSDN"
 network_type="OVNKubernetes"

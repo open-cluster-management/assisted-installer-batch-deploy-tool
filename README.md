@@ -9,20 +9,22 @@ Then provide the addons you would like to enable or disabled in all hosts in the
 ### Generating manifests
 On the Bastion machine, run script [`create-manifests.sh`](https://github.com/open-cluster-management/assisted-installer-batch-deploy-tool/blob/main/create-manifests.sh) to create the SNO clusters:
 ```sh
-./create-manifests.sh inventory/csv/path pull/secret/path private-key-path
+./create-manifests.sh inventory/csv/path pull/secret/path private/key/path cluster-image-set
 ```
 
 If the script is exited without errors, manifests should be created for each inventory. The generated manifests are under `/clusters`. Under `/clusters`, directories will be created for each SNO clusters, with the directory name being the cluster name. Before continuing to the next step, we recommend spot checking the manifests of one of the generated clusters.
 
+#### Required arguments
+The 4 required arguments for the script are:
+1. `inventory/csv/path` - file path to the inventory csv file. E.g. `/User/root/files/inventory.csv`
+2. `pull/secret/path` - file path to the OCP pull secret file. E.g. `/User/root/files/pull_secret.txt`
+3. `private/key/path` - file path to your SSH private key. E.g. `/User/root/.ssh/id_rsa`
+4. `cluster-image-set` - name of the cluster image set to use in the `AgentClusterInstall` resource. E.g. `ocp-4.8`
+
 #### Additional options
 Set the following variables ahead of running the "Generating manifests" section.
 `enable_workload_partitioning` - set to "true" to enable workload partitioning. Default is "false".
-`cluster_image_set` - the name of the OCP clusterimageset to use in `AgentClusterInstall` for each SNO cluster. Default is "sno-ocp-clusterimageset".
 
-Example usage:
-```sh
-cluster_image_set="ocp-4.8.0" ./create-manifests.sh inventory/csv/path pull/secret/path private-key-path
-```
 ### Monitoring managed SNO clusters
 Before applying the manifests, you can start the monitoring script that measures the progress of the installation will also be started in the background. Its output will be saved in `managedsnocluster.csv`:
 ```sh
