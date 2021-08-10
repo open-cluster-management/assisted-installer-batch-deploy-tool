@@ -1,0 +1,2 @@
+cluster_name,domain_name,mac_addr,ip,prefix,gateway,machine_cidr,dns_resolver,bmc_addr,bmc_username_base64,bmc_password_base64
+sno00001,rdu2.scalelab.redhat.com,52:54:00:76:00:01,198.18.8.14,21,198.18.8.1,198.18.8.0/21,198.18.8.1,redfish-virtualmedia+http://198.18.8.10:9000/redfish/v1/Systems/1c721a53-7144-48a1-a86b-35aa96bc2e7c,cmVkaGF0,cGFzc3dvcmQ=

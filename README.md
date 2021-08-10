@@ -23,7 +23,13 @@ The 4 required arguments for the script are:
 
 #### Additional options
 Set the following variables ahead of running the "Generating manifests" section.
-`enable_workload_partitioning` - set to "true" to enable workload partitioning. Default is "false".
+- `enable_workload_partitioning` - set to "true" to enable workload partitioning. Default is "false".
+- `enable_static_ip` - set to "true" to use static ip, and "false" to use DHCP. Default is "true". If set "false", the [nmstateconfig](templates/nmstate.template.yaml) CR will not be generated, and the following fields in the inventory csv will be ignored, and you can set any values (left blank) for these fields:
+    - `ip`
+    - `prefix`
+    - `gateway`
+    - `dns_resolver`
+- `use_ipv4` - set to "true" to use ipv4 instead of ipv6. Default is "false". Will only matter when using static ip. DHCP won't be affected. ([example ipv4 inventory csv](inventory-manifest.csv.ipv4.example))
 
 ### Monitoring managed SNO clusters
 Before applying the manifests, you can start the monitoring script that measures the progress of the installation will also be started in the background. Its output will be saved in `managedsnocluster.csv`:

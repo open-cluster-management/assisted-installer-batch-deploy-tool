@@ -19,17 +19,11 @@ ssh_key_path=$3
 cluster_image_set=$4
 
 enable_workload_partitioning=${enable_workload_partitioning:-"false"}
-
+use_ipv4=${use_ipv4:-"false"}
+enable_static_ip=${enable_static_ip:-"true"}
 
 #network_type="OpenShiftSDN"
 network_type="OVNKubernetes"
-
-# ipv4
-# nmstate_ip_version="ipv4"
-# nmstate_default_route="0.0.0.0/0"
-# cluster_network_cidr="10.128.0.0/14"
-# cluster_network_host_prefix=23
-# service_network="172.30.0.0/16"
 
 # ipv6
 nmstate_ip_version="ipv6"
@@ -37,6 +31,14 @@ nmstate_default_route="::/0"
 cluster_network_cidr="fd01::/48"
 cluster_network_host_prefix=64
 service_network="fd02::/112"
+if [[ $use_ipv4 == "true" ]] ; then
+  # ipv4
+  nmstate_ip_version="ipv4"
+  nmstate_default_route="0.0.0.0/0"
+  cluster_network_cidr="10.128.0.0/14"
+  cluster_network_host_prefix=23
+  service_network="172.30.0.0/16"
+fi
 
 generate_manifest_yamls() {
   local row=$1
@@ -72,15 +74,20 @@ generate_manifest_yamls() {
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     templates/namespace.template.yaml >"$yaml_dir"/100-namespace.yaml
 
-  sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
-    -e "s~{{DNS_RESOLVER}}~'$dns_resolver'~g" \
-    -e "s~{{IP_ADDR}}~'$ip_addr'~g" \
-    -e "s~{{MAC_ADDR}}~'$mac_addr'~g" \
-    -e "s~{{GATEWAY}}~'$gateway'~g" \
-    -e "s~{{NMSTATE_IP_VERSION}}~'$nmstate_ip_version'~g" \
-    -e "s~{{NMSTATE_DEFAULT_ROUTE}}~'$nmstate_default_route'~g" \
-    -e s/\{\{PUBLIC_IP_NETWORK_PREFIX\}\}/"$public_ip_network_prefix"/g \
-    templates/nmstate.template.yaml >"$yaml_dir"/300-nmstate.yaml
+  if [[ $enable_static_ip == "true" ]] ; then
+    sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
+      -e "s~{{DNS_RESOLVER}}~'$dns_resolver'~g" \
+      -e "s~{{IP_ADDR}}~'$ip_addr'~g" \
+      -e "s~{{MAC_ADDR}}~'$mac_addr'~g" \
+      -e "s~{{GATEWAY}}~'$gateway'~g" \
+      -e "s~{{NMSTATE_IP_VERSION}}~'$nmstate_ip_version'~g" \
+      -e "s~{{NMSTATE_DEFAULT_ROUTE}}~'$nmstate_default_route'~g" \
+      -e s/\{\{PUBLIC_IP_NETWORK_PREFIX\}\}/"$public_ip_network_prefix"/g \
+      templates/nmstate.template.yaml >"$yaml_dir"/300-nmstate.yaml
+  else
+    # delete previously generated nmstate
+    [ -e "$yaml_dir"/300-nmstate.yaml ] && rm "$yaml_dir"/300-nmstate.yaml
+  fi
 
   sed -e s/\{\{CLUSTER_NAME\}\}/"$cluster_name"/g \
     -e s/\{\{PULL_SECRET_BASE64\}\}/"$pull_secret_base64"/g \
