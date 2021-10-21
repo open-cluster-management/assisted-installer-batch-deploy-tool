@@ -111,7 +111,7 @@ generate_manifest_yamls() {
     enabled=$(echo $k | jq -c -j -r '.enabled')
 
     # If user wants to disable the observability addon, just simply delete the line
-    # because it's enabled by default okay looks like this is wrong
+    # because it's enabled by default
     if [[ $addon_name == "observability" && $enabled == "false" ]]; then
       observability_replacement="observability: disabled"
       #      sed -e s/\{\{OBSERVABILITY_LABEL\}\}/observability\=disabled/g \
