@@ -14,6 +14,17 @@ On the Bastion machine, run script [`create-manifests.sh`](https://github.com/op
 
 If the script is exited without errors, manifests should be created for each inventory. The generated manifests are under `/clusters`. Under `/clusters`, directories will be created for each SNO clusters, with the directory name being the cluster name. Before continuing to the next step, we recommend spot checking the manifests of one of the generated clusters.
 
+#### SiteConfig Support
+
+If you want to use [SiteConfig + argocd](https://github.com/openshift-kni/cnf-features-deploy/tree/master/ztp/gitops-subscriptions/argocd), use the following command to generate manifests:
+```sh
+./create-siteconfig.sh inventory/csv/path pull/secret/path private/key/path cluster-image-set
+```
+
+You can apply manifests as before. Note: only namespace & secrets will be applied, and ZTP will not start until you trigger a SiteConfig creation with gitops.
+
+You will need to copy SiteConfig in clusters/siteconfigs directory into the gitops application repo, which will create all the required CRs.
+
 #### Required arguments
 The 4 required arguments for the script are:
 1. `inventory/csv/path` - file path to the inventory csv file. E.g. `/User/root/files/inventory.csv`

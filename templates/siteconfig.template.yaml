@@ -1,0 +1,65 @@
+apiVersion: ran.openshift.io/v1
+kind: SiteConfig
+metadata:
+  name: {{CLUSTER_NAME}}
+  namespace: {{CLUSTER_NAME}}
+spec:
+  baseDomain: {{BASE_DOMAIN}}
+  pullSecretRef:
+    name: "assisted-deployment-pull-secret"
+  clusterImageSetNameRef: {{CLUSTER_IMAGE_SET}}
+  sshPublicKey: {{PUBLIC_KEY}}
+  clusters:
+  - clusterName: {{CLUSTER_NAME}}
+    clusterType: "sno"
+    clusterProfile: "du"
+    clusterLabels:
+      group-sno-du: 'true'
+      group-du-sno: ''
+      common: 'true'
+      name: {{CLUSTER_NAME}}
+      sites: {{CLUSTER_NAME}}
+      {{OBSERVABILITY_LABEL}}
+    clusterNetwork:
+      - cidr: {{CLUSTER_NETWORK_CIDR}}
+        hostPrefix: {{CLUSTER_NETWORK_HOST_PREFIX}}
+    machineNetwork:
+      - cidr: {{MACHINE_NETWORK_DIR}}
+    serviceNetwork:
+      - {{SERVICE_NETWORK}}
+    # additionalNTPSources:
+    #   - 2620:52:0:1310::1f6
+    nodes:
+      - hostName: "{{CLUSTER_NAME}}"
+        bmcAddress: {{BMC_ADDR}}
+        bmcCredentialsName:
+          name: {{CLUSTER_NAME}}-bmc-secret
+        bootMACAddress: {{MAC_ADDR}}
+        bootMode: "UEFI"
+        rootDeviceHints:
+          hctl: '0:1:0'
+        {{CPU_SET}}
+        nodeNetwork:
+          interfaces:
+            - name: eno1
+              macAddress: {{MAC_ADDR}}
+          config:
+            interfaces:
+              - name: eno1
+                type: ethernet
+                state: up
+                macAddress: {{MAC_ADDR}}
+                ipv4: {{IPV4_SETTINGS}}
+                ipv6: {{IPV6_SETTINGS}}
+            dns-resolver:
+              config:
+                # search:
+                # - clus2.t5g.lab.eng.bos.redhat.com
+                server:
+                - {{DNS_RESOLVER}}
+            routes:
+              config:
+              - destination: {{NMSTATE_DEFAULT_ROUTE}}
+                next-hop-interface: eno1
+                next-hop-address: {{GATEWAY}}
+                table-id: 254
