@@ -120,7 +120,7 @@ generate_manifest_yamls() {
 
 }
 
-pull_secret_base64=$(base64 -b 0 "$pull_secret_path")
+pull_secret_base64=$(base64 -w 0 "$pull_secret_path")
 public_key=$(cat "${ssh_key_path}.pub")
 
 sed 1d $inventory_file | while IFS="," read row; do
