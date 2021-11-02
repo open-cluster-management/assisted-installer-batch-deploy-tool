@@ -52,9 +52,9 @@ generate_manifest_yamls() {
   ipv4_settings="{\"enabled\":false}"
   ipv6_settings="{\"enabled\":false}"
   if [[ $use_ipv4 == "true" ]] ; then
-    ipv4_settings="{\"enabled\":true,\"address\":{\"ip\":\"${ip_addr}\",\"prefix-length\":${public_ip_network_prefix}}}"
+    ipv4_settings="{\"enabled\":true,\"address\":[{\"ip\":\"${ip_addr}\",\"prefix-length\":${public_ip_network_prefix}}]}"
   else
-    ipv6_settings="{\"enabled\":true,\"address\":{\"ip\":\"${ip_addr}\",\"prefix-length\":${public_ip_network_prefix}}}"
+    ipv6_settings="{\"enabled\":true,\"address\":[{\"ip\":\"${ip_addr}\",\"prefix-length\":${public_ip_network_prefix}}]}"
   fi
 
   local yaml_dir=clusters/"$cluster_name"/manifest
@@ -116,7 +116,7 @@ generate_manifest_yamls() {
     -e s/\{\{PUBLIC_IP_NETWORK_PREFIX\}\}/"$public_ip_network_prefix"/g \
     -e s/\{\{OBSERVABILITY_LABEL\}\}/"$observability_replacement"/g \
     -e "s~{{BMC_ADDR}}~'$bmc_addr'~g" \
-    templates/siteconfig.template.yaml >"$siteconfigs_dir"/siteconfig.yaml
+    templates/siteconfig.template.yaml >"$siteconfigs_dir"/${cluster_name}-siteconfig.yaml
 
 }
 
