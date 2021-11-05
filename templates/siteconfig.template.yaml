@@ -1,3 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{CLUSTER_NAME}}
+  labels:
+    name: {{CLUSTER_NAME}}
+---
 apiVersion: ran.openshift.io/v1
 kind: SiteConfig
 metadata:
